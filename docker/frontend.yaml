@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: learnbayapp
+  template:
+    metadata:
+      labels:
+        app: learnbayapp
+    spec:
+      containers:
+      - name: frontend
+        image: gcr.io/google-samples/gb-frontend:v5
+        ports:
+        - containerPort: 80

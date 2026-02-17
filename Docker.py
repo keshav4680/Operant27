@@ -1,1 +1,1 @@
-print("This is test message from Keshav")
+print("Test message from Python and Docker for LAB purpose")
