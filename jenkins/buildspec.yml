@@ -11,7 +11,11 @@ phases:
     runtime-versions:
       python: 3.12
     commands:
-      - echo "Install phase started"
+      - echo "Listing files..."
+      - ls -la
+      - echo "Trying to find requirements..."
+      - find . -name requirements.txt
+      
 
   pre_build:
     commands:
