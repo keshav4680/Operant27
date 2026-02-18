@@ -31,6 +31,9 @@ hooks:
     - location: scripts/install_dependencies.sh
       timeout: 300
       runas: root
+  Install:
+    - location: scripts/install_app.sh
+      timeout: 300
   AfterInstall:
     - location: scripts/app_configuration.sh
       timeout: 300

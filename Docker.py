@@ -1,1 +1,0 @@
-print("Test message from Python and Docker for LAB purpose")
