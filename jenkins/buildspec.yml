@@ -1,85 +1,39 @@
-versions 0.2 #Build sepcification for AWS CodeBuild --> defines the buildspec schema version
+
+version: 0.2
 
 env:
-  variables:
   parameter-store:
-    DB_HOST: /prod/db/host
-  secrets-manager:
-    DB_PASSWORD: /prod/db:password
-  APP_NAME: keshav-webapp
-  env:prod
+    DOCKER_REGISTRY_USERNAME: /learnbay-app/docker-credentials/username1
+    DOCKER_REGISTRY_PASSWORD: /learnbay-app/docker-credentials/password1
 
 phases:
   install:
-  prebuild:
     runtime-versions:
-      puthon: 3.12
-      nodejs: 18
+      python: 3.12
     commands:
-      #-apt-get-update -y (this is for example, you can use the package manager of your choice)
-      #-yum install -y python3-pip (this is for example, you can use the package manager of your choice)
-      -echo "Installing dependencies..."
-      "pip install -r requirements.txt"
-      -npm install -g npm@latest
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
 
-  # This commands which are used to be executed before the build phase     
-
-  prebuild:
+  pre_build:
     commands:
-      -echo "[$(date)] Pre build validation Started"
-      -node --version && npm --version
-      -npm run test
-      -echo"[(date)] Install application Dependencies"
-      -npm ci  --only production #ci meands clearn install
-      -
-
+      - echo "Logging in to Docker Hub..."
+      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
 
   build:
     commands:
-      -echo "[$(date)] Build Started"
-      -npm run build
-      -echo "[$(date)] Build Completed"
+      - echo "Building Docker image..."
+      - docker build -t $DOCKER_REGISTRY_USERNAME/python-flask-aws:latest .
 
-build:
+  post_build:
     commands:
-    -echo "[$(date)] Build StartedP Phrase Document"
-    -echo "[{date)}] run code quantiity checks"
-    -npm run lint [(echo "linting failed" & exit 1)] # linting step: Code quality enforcement
-    -echo "[(date)]" Running Unit Tests"
-    -npm test (echo "Unit Tests Failed" and  exit 1) # Unit testing step: Ensures code correctness
-    -echo "($(date)] Building Application")"
-    -npm run build (echo "Build Failed" and exit 1) # Build step: Transpiles of code into distributeble format
-    -echo "[$(date)] Build Completed"
-    -echo "[$(date)] creating deployment artifacts"
-    -zip -r applciation.zip . -x "node_modules/*" "*.git*" "*.zip" "coverage/*"
-  
-post_build:
-  commands:
-    -echo "[$(date)] Post Build Validation Started"
-    -echo "[$(date)] Validating Build Artifacts"
-    -ls la application.zip
-    -echo "[$(date)] Upload Build Artifacts to S3"
-    -aws s3 cp application.zip s3://$s3_BUCKET_NAME/$APP_NAME/$env/application.zip
-  
-
+      - echo "Pushing Docker image..."
+      - docker push $DOCKER_REGISTRY_USERNAME/python-flask-aws:latest
+      - echo "Build completed"
 
 artifacts:
   files:
     - '**/*'
-  name: build-$(date+%Y%m%d-%H%M%S)
-  discard-paths: true
 
-cache:
-  paths:
-    - '/root/-cache/**/*'
-    - node_modules/**/*
-
-# Code Build will display results in the console    
-reports:
-  tests-results:
-    files:
-      - 'test-reports/**/*.xml'
-      file-format: JUNITXML
 
 
 
