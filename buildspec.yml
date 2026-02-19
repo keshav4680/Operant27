@@ -8,10 +8,12 @@ env:
 
 phases:
   install:
-    runtime-versions:
-      python: 3.12
     commands:
-      - echo "Installing dependencies..."
+      - echo "===== DEBUG INFO ====="
+      - pwd
+      - echo "Files in current directory:"
+      - ls -la
+      - echo "Trying to install..."
       - pip install -r requirements.txt
       
 
