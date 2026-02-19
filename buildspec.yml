@@ -7,14 +7,12 @@ env:
     DOCKER_REGISTRY_PASSWORD: /learnbay-app/docker-credentials/password1
 
 phases:
-  phases:
-    install:
-      commands:
-        - echo "Current directory:"
-        - pwd
-        - echo "Files inside:"
-        - ls -la
-        - pip install -r requirements.txt
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
       
 
   pre_build:
