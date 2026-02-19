@@ -1,0 +1,58 @@
+
+version: 0.2
+
+env:
+  parameter-store:
+    DOCKER_REGISTRY_USERNAME: /learnbay-app/docker-credentials/username1
+    DOCKER_REGISTRY_PASSWORD: /learnbay-app/docker-credentials/password1
+
+phases:
+  phases:
+    install:
+      commands:
+        - echo "Current directory:"
+        - pwd
+        - echo "Files inside:"
+        - ls -la
+        - pip install -r requirements.txt
+      
+
+  pre_build:
+    commands:
+      - echo "Logging in to Docker Hub..."
+      - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USERNAME" --password-stdin
+
+  build:
+    commands:
+      - echo "Building Docker image..."
+      - docker build -t $DOCKER_REGISTRY_USERNAME/python-flask-aws:latest .
+
+  post_build:
+    commands:
+      - echo "Pushing Docker image..."
+      - docker push $DOCKER_REGISTRY_USERNAME/python-flask-aws:latest
+      - echo "Build completed"
+
+artifacts:
+  files:
+    - '**/*'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
