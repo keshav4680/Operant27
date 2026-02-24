@@ -21,7 +21,7 @@ phases:
   build:
     commands:
       - echo "Building Docker image..."
-      - docker build -t $DOCKER_REGISTRY_USERNAME/python-flask-aws:latest .
+      - docker build -t $DOCKER_REGISTRY_USERNAME/python-flask-aws:latest ./scripts
 
   post_build:
     commands:
